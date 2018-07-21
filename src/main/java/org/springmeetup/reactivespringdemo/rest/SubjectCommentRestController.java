@@ -2,7 +2,6 @@ package org.springmeetup.reactivespringdemo.rest;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.springframework.http.MediaType;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springmeetup.reactivespringdemo.domain.entity.Subject;
 import org.springmeetup.reactivespringdemo.domain.entity.SubjectComment;
 import org.springmeetup.reactivespringdemo.domain.repository.SubjectCommentRepository;
 import org.springmeetup.reactivespringdemo.util.TimestampUtils;
@@ -34,6 +32,16 @@ public class SubjectCommentRestController {
     	Date date = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
     	
 		return subjectCommentRepository.findByTimestampGreaterThan(TimestampUtils.computeISO8601Timestamp(date));
+	}
+
+    @GetMapping(value = "/add-new/{code}/{author}/{comment}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Mono<SubjectComment> addNewComment(
+			@PathVariable("code") String code,
+			@PathVariable("author") String author,
+			@PathVariable("comment") String comment) {
+    	SubjectComment subjectComment = new SubjectComment(code, author, comment);
+    	
+    	return subjectCommentRepository.save(subjectComment);
 	}
     
 }

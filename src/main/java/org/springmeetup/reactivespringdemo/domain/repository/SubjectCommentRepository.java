@@ -9,6 +9,6 @@ import reactor.core.publisher.Flux;
 public interface SubjectCommentRepository extends ReactiveMongoRepository<SubjectComment, String> {
 
 	@Tailable
-	public Flux<SubjectComment> findByTimestampGreaterThan(final String timestamp);
+	public Flux<SubjectComment> findBySubjectIdAndTimestampGreaterThan(final String subjectId, final String timestamp);
 	
 }

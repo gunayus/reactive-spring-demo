@@ -28,10 +28,10 @@ public class SubjectCommentRestController {
 	}
 
     @GetMapping(value = "/all/{code}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<SubjectComment> findAllCommentsBySubjectCode() {
+	public Flux<SubjectComment> findAllCommentsBySubjectCode(@PathVariable("code") String code) {
     	Date date = Date.from(LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant());
     	
-		return subjectCommentRepository.findByTimestampGreaterThan(TimestampUtils.computeISO8601Timestamp(date));
+		return subjectCommentRepository.findBySubjectIdAndTimestampGreaterThan(code, TimestampUtils.computeISO8601Timestamp(date));
 	}
 
     @GetMapping(value = "/add-new/{code}/{author}/{comment}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
